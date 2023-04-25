@@ -1,10 +1,12 @@
 import {
+  isValidObjectId,
   Model,
   Schema,
   model,
   models,
 } from 'mongoose';
 import ICar from '../Interfaces/ICar';
+import ErrorHandler from '../Middlewares/ErrorHandler';
 
 export default class CarODM {
   private schema: Schema;
@@ -25,5 +27,14 @@ export default class CarODM {
 
   public async create(car: ICar): Promise<ICar> {
     return this.model.create({ ...car });
+  }
+
+  public async find(): Promise<ICar[]> {
+    return this.model.find();
+  }
+
+  public async findById(_id: string | undefined): Promise<ICar | null> {
+    if (!isValidObjectId(_id)) throw new ErrorHandler(422, 'Invalid mongo id');
+    return this.model.findOne({ _id });
   }
 }

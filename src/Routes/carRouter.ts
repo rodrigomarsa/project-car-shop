@@ -3,10 +3,11 @@ import CarController from '../Controllers/CarController';
 
 const router = Router();
 
-router
-  .post(
-    '/cars',
-    (req, res, next) => new CarController(req, res, next).create(),
-  );
+router.route('/cars')
+  .post((req, res, next) => new CarController(req, res, next).create())
+  .get((req, res, next) => new CarController(req, res, next).getAll());
+
+router.route('/cars/:id')
+  .get((req, res, next) => new CarController(req, res, next).getById());
 
 export default router;
