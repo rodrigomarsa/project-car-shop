@@ -4,6 +4,7 @@ import {
   Schema,
   model,
   models,
+  UpdateQuery,
 } from 'mongoose';
 import ICar from '../Interfaces/ICar';
 import ErrorHandler from '../Middlewares/ErrorHandler';
@@ -36,5 +37,14 @@ export default class CarODM {
   public async findById(_id: string | undefined): Promise<ICar | null> {
     if (!isValidObjectId(_id)) throw new ErrorHandler(422, 'Invalid mongo id');
     return this.model.findOne({ _id });
+  }
+
+  public async updateById(_id: string | undefined, carToUpdate: ICar): Promise<ICar | null> {
+    if (!isValidObjectId(_id)) throw new ErrorHandler(422, 'Invalid mongo id');
+    return this.model.findByIdAndUpdate(
+      { _id },
+      { ...carToUpdate } as UpdateQuery<ICar>,
+      { new: true },
+    );
   }
 }

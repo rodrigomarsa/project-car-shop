@@ -8,6 +8,7 @@ router.route('/cars')
   .get((req, res, next) => new CarController(req, res, next).getAll());
 
 router.route('/cars/:id')
-  .get((req, res, next) => new CarController(req, res, next).getById());
+  .get((req, res, next) => new CarController(req, res, next).getById())
+  .put((req, res, next) => new CarController(req, res, next).updateById());
 
 export default router;
