@@ -9,6 +9,7 @@ router.route('/motorcycles')
 
 router.route('/motorcycles/:id')
   .get((req, res, next) => new MotorcycleController(req, res, next).getById())
-  .put((req, res, next) => new MotorcycleController(req, res, next).updateById());
+  .put((req, res, next) => new MotorcycleController(req, res, next).updateById())
+  .delete((req, res, next) => new MotorcycleController(req, res, next).deleteById());
 
 export default router;

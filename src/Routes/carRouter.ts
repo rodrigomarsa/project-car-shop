@@ -9,6 +9,7 @@ router.route('/cars')
 
 router.route('/cars/:id')
   .get((req, res, next) => new CarController(req, res, next).getById())
-  .put((req, res, next) => new CarController(req, res, next).updateById());
+  .put((req, res, next) => new CarController(req, res, next).updateById())
+  .delete((req, res, next) => new CarController(req, res, next).deleteById());
 
 export default router;

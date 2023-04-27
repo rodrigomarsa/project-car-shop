@@ -3,6 +3,8 @@ import IMotorcycle from '../Interfaces/IMotorcycle';
 import ErrorHandler from '../Middlewares/ErrorHandler';
 import MotorcycleODM from '../Models/MotorcycleODM';
 
+const NOT_FOUND_MESSAGE = 'Motorcycle not found';
+
 export default class MotorcycleService {
   private createMotorcycleDomain(motorcycle: IMotorcycle | null): Motorcycle | null {
     if (motorcycle) {
@@ -28,15 +30,22 @@ export default class MotorcycleService {
   public async getById(id: string) {
     const motorcycleODM = new MotorcycleODM();
     const motorcycle = await motorcycleODM.findById(id);
-    if (!motorcycle) throw new ErrorHandler(404, 'Motorcycle not found');
+    if (!motorcycle) throw new ErrorHandler(404, NOT_FOUND_MESSAGE);
     return this.createMotorcycleDomain(motorcycle);
   }
 
   public async updateById(id: string | undefined, motorcycleToUpdate: IMotorcycle) {
     const motorcycleODM = new MotorcycleODM();
     const motorcycle = await motorcycleODM.findById(id);
-    if (!motorcycle) throw new ErrorHandler(404, 'Motorcycle not found');
+    if (!motorcycle) throw new ErrorHandler(404, NOT_FOUND_MESSAGE);
     const updatedmotorcycle = await motorcycleODM.updateById(id, motorcycleToUpdate);
     return this.createMotorcycleDomain(updatedmotorcycle);
+  }
+
+  public async deleteById(id: string | undefined) {
+    const motorcycleODM = new MotorcycleODM();
+    const motorcycle = await motorcycleODM.findById(id);
+    if (!motorcycle) throw new ErrorHandler(404, NOT_FOUND_MESSAGE);
+    await motorcycleODM.deleteById(id);
   }
 }
