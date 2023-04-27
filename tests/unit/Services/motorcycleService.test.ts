@@ -51,6 +51,9 @@ const outputMotorcycles: IMotorcycle[] = [
   },
 ];
 
+const NOT_FOUND_MESSAGE = 'Motorcycle not found';
+const INVALID_MESSAGE = 'Invalid mongo id';
+
 const service = new MotorcycleService();
 
 describe('Verificando o service de motocicletas', function () {
@@ -85,7 +88,7 @@ describe('Verificando o service de motocicletas', function () {
     try {
       await service.getById('644a52f9c63dffd6df47f153');
     } catch (error) {
-      expect((error as Error).message).to.be.equal('Motorcycle not found');
+      expect((error as Error).message).to.be.equal(NOT_FOUND_MESSAGE);
     }
   });
 
@@ -97,7 +100,7 @@ describe('Verificando o service de motocicletas', function () {
       try {
         await service.getById('644963666f428328818375XX');
       } catch (error) {
-        expect((error as Error).message).to.be.equal('Invalid mongo id');
+        expect((error as Error).message).to.be.equal(INVALID_MESSAGE);
       }
     },
   );
@@ -117,7 +120,7 @@ describe('Verificando o service de motocicletas', function () {
     try {
       await service.updateById('644a52f9c63dffd6df47f153', motorcycleInput);
     } catch (error) {
-      expect((error as Error).message).to.be.equal('Motorcycle not found');
+      expect((error as Error).message).to.be.equal(NOT_FOUND_MESSAGE);
     }
   });
 
@@ -129,7 +132,39 @@ describe('Verificando o service de motocicletas', function () {
       try {
         await service.updateById('644a52f9c63dffd6df47f1XX', motorcycleInput);
       } catch (error) {
-        expect((error as Error).message).to.be.equal('Invalid mongo id');
+        expect((error as Error).message).to.be.equal(INVALID_MESSAGE);
+      }
+    },
+  );
+
+  it('Deveria apagar uma motocicleta específica com sucesso', async function () {
+    sinon.stub(Model, 'findOne').resolves(true);
+    sinon.stub(Model, 'deleteOne').resolves();
+
+    const result = await service.deleteById('644a52f9c63dffd6df47f153');
+
+    expect(result).to.be.deep.equal(undefined);
+  });
+
+  it('Deveria lançar uma exceção quando a motocicleta há apagar não existe', async function () {
+    sinon.stub(Model, 'findOne').resolves(false);
+    
+    try {
+      await service.deleteById('644a52f9c63dffd6df47f153');
+    } catch (error) {
+      expect((error as Error).message).to.be.equal(NOT_FOUND_MESSAGE);
+    }
+  });
+
+  it(
+    'Deveria lançar uma exceção quando o id da motocicleta há apagar é inválido',
+    async function () {
+      sinon.stub(Model, 'findOne').resolves(false);
+    
+      try {
+        await service.deleteById('644a52f9c63dffd6df47f1XX');
+      } catch (error) {
+        expect((error as Error).message).to.be.equal(INVALID_MESSAGE);
       }
     },
   );
